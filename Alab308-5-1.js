@@ -22,10 +22,17 @@ function avgArray(arr) {
 console.log(avgArray([2,10]));
 
 //3. Take an array of strings and return the longest string.
-// function longestString(arr) {
-    
-// }
+function longestString(arr) {
+    let longest = "";
+    for (let string of arr) {
+        if (string.length > longest.length) {
+            longest = string;
+        }
+    }
+    return longest;
+}
 
+console.log(longestString(["a", "ab", "abcd" , "abc"]))
 
 //4. Take an array of strings, and a number and return an array of the strings that are longer than the given number. 
 
