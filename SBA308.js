@@ -80,7 +80,6 @@ const LearnerSubmissions = [
 /*FOR DATE CHECK*/
 const todaysDate = "2024-08-16";
 
-
 /*Create a function named getLearnerData() that accepts these values as parameters, in the order listed: (CourseInfo, AssignmentGroup, [LearnerSubmission]), and returns the formatted result, which should be an array of objects as described: 
 {
     // the ID of the learner for which this data has been collected
@@ -98,11 +97,14 @@ const todaysDate = "2024-08-16";
     // the average or the keyed dictionary of scores
 } */
 function getLearnerData(course, ag, submissions) {
-  let result = [];
-  let learners = listOfLearners(submissions); // i.e. [125,131]
 
   //if assignment group does not belong to it's course, return error
+  if (course.id != ag.course_id) {
+    return console.error("the assignment course does not match the course. please check course IDs");
+  }
 
+  let result = [];
+  let learners = listOfLearners(submissions); // i.e. [125,131]
   for (const learnerID of learners) {
     let newLearnerInfo = {};
     newLearnerInfo["id"] = learnerID; //add learner
@@ -110,25 +112,34 @@ function getLearnerData(course, ag, submissions) {
     let pointSum = 0,
       maxScoreSum = 0;
     for (const submission of submissions) {
-      if (submission.learner_id === learnerID) {
+      if (submission.learner_id == learnerID) {
+        //if entered string of number vs number doesnt matter
         //only calculate for submissions of that learner
         const assignId = submission.assignment_id; //look into the particular assignment id
         const assignInfo = returnAssignOnID(ag.assignments, assignId); //get the corresponding object of the assignID
-        let pointsEarned = checkPointsEarnedOnAssignment(
-          submission,
-          assignInfo
-        );
+        let pointsEarned;
+        try {
+          pointsEarned = checkPointsEarnedOnAssignment(submission, assignInfo);
+        } catch {
+          console.error(
+            `assignment ${assignId} info could not be found to calculate score`
+          );
+        }
 
         if (pointsEarned >= 0) {
           //if valid assign submission
+          try {
+            newLearnerInfo[assignId] = parseFloat(
+              pointsEarned / assignInfo.points_possible
+            ).toFixed(2); //calculating the score avg
+
+          } catch {
+            console.error(
+              "error in division, check points possible is a non-zero number"
+            );
+          }
           pointSum += pointsEarned;
           maxScoreSum += assignInfo.points_possible;
-          console.log(`tot ${assignInfo.points_possible} earn${pointsEarned}`);
-          newLearnerInfo[assignId] = parseFloat(
-            pointsEarned / assignInfo.points_possible
-          ).toFixed(2); //calculating the score avg
-
-          console.log(newLearnerInfo);
         }
       }
     }
@@ -174,7 +185,7 @@ function checkPointsEarnedOnAssignment(learnerSubmission, assignInfo) {
 //given an assignment id, and a list of assignmentInfo return the associated **could be null if no assignment
 function returnAssignOnID(assignInfo, id) {
   for (const assign of assignInfo) {
-    if (assign.id === id) {
+    if (assign.id == id) {
       return assign;
     }
   }
