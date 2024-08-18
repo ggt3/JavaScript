@@ -77,7 +77,10 @@ const LearnerSubmissions = [
   },
 ];
 
+/*FOR DATE CHECK*/
 const todaysDate = "2024-08-16";
+
+
 /*Create a function named getLearnerData() that accepts these values as parameters, in the order listed: (CourseInfo, AssignmentGroup, [LearnerSubmission]), and returns the formatted result, which should be an array of objects as described: 
 {
     // the ID of the learner for which this data has been collected
@@ -93,23 +96,17 @@ const todaysDate = "2024-08-16";
     <assignment_id>: number,
     // if an assignment is not yet due, it should not be included in either
     // the average or the keyed dictionary of scores
-}
-*/
-
+} */
 function getLearnerData(course, ag, submissions) {
   let result = [];
   let learners = listOfLearners(submissions); // i.e. [125,131]
 
   //if assignment group does not belong to it's course, return error
 
-  let individualSubmissions = [],
-    average;
   for (const learnerID of learners) {
-    console.log(learnerID + " learner ID");
-    // const scores = learnerScores(learnerID, submissions,ag.assignments)
-
     let newLearnerInfo = {};
-    newLearnerInfo["id"] = learnerID;
+    newLearnerInfo["id"] = learnerID; //add learner
+
     let pointSum = 0,
       maxScoreSum = 0;
     for (const submission of submissions) {
@@ -125,7 +122,6 @@ function getLearnerData(course, ag, submissions) {
         if (pointsEarned >= 0) {
           //if valid assign submission
           pointSum += pointsEarned;
-          console.log(pointSum);
           maxScoreSum += assignInfo.points_possible;
           console.log(`tot ${assignInfo.points_possible} earn${pointsEarned}`);
           newLearnerInfo[assignId] = parseFloat(
@@ -137,15 +133,12 @@ function getLearnerData(course, ag, submissions) {
       }
     }
 
-    newLearnerInfo["avg"] = pointSum / maxScoreSum; //weighted average
+    newLearnerInfo["avg"] = pointSum / maxScoreSum; //adding weighted average
 
     result.push(newLearnerInfo);
   }
   return result;
 }
-
-//given a learner, an array of all assignments and assignmentInfo, return an array of objs of that learner {assignid: percent score}
-function learnerScores(learnerID, submissions, allAssigns) {}
 
 //given submissions, return array of unique list of learners
 function listOfLearners(submissions) {
@@ -158,6 +151,7 @@ function listOfLearners(submissions) {
   }
   return result;
 }
+
 //pass in one learner submission and the assignment to check it against; calculate total score (if there is a late deduct), will return -1 if assignment is not due
 function checkPointsEarnedOnAssignment(learnerSubmission, assignInfo) {
   let pointsEarned;
@@ -167,19 +161,13 @@ function checkPointsEarnedOnAssignment(learnerSubmission, assignInfo) {
   }
   if (learnerSubmission.submission.submitted_at <= assignInfo.due_at) {
     //submitted within time, we should count the score as normal
-    // percentScore =
-    //   (learnerSubmission.submission.score / assignInfo.points_possible) * 100;
-
     pointsEarned = learnerSubmission.submission.score;
   } else {
     //submission is late
     const deduct = assignInfo.points_possible * 0.1;
     pointsEarned = learnerSubmission.submission.score - deduct;
-    console.log(`deduct ${deduct} and points Earned ${pointsEarned}`);
   }
-  //   console.log(
-  //     `${assignInfo.id} id ${learnerSubmission.submission.score} learn and ${assignInfo.points_possible} total and ${percentScore} percent`
-  //   );
+
   return pointsEarned;
 }
 
