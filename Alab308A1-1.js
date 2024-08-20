@@ -9,12 +9,12 @@ function callStackSize() {
     return callStackSize();
 }
 
-try {
-    callStackSize()
-} catch(e) {
-    console.error("size of the stack is " + counter )
-    console.error(e)
-}
+// try {
+//     callStackSize()
+// } catch(e) {
+//     console.error("size of the stack is " + counter )
+//     console.error(e)
+// }
 
 
 //TRAMPOLINING EXAMPLE
@@ -86,6 +86,19 @@ const factorial = (n) => {
   /* Write a recursive function that completely flattens an array of nested arrays, regardless of how deeply nested the arrays are.
 Once your recursive function is complete, trampoline it.*/
 
-function flatten(arr) {
-    if ()
+let answer = []
+function flatten(arr, ans) {
+
+    for (let i=0; i<arr.length; i++) {
+      console.log(typeof arr[i])
+        if (typeof arr[i] !== "object") {
+            console.log("hit "+ arr[i])
+            ans.push(arr[i])
+        }else {
+          flatten(arr[i], ans)
+        }
+    }
+    return ans;
 }
+let flat = [1,[2,[3,4]]]
+console.log(flatten(flat,answer))
