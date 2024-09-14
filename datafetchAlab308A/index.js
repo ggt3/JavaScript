@@ -118,7 +118,15 @@ async function axiosGetImgOnSelect(e){
     );
     Carousel.appendCarousel(element);
   });
- 
+   // check if there is a child element on the infoDump div
+   if (infoDump.firstChild) {
+    infoDump.firstChild.remove();
+  }
+
+  // create a new element for the info
+  const p = document.createElement("p");
+  p.textContent = breedsData[0].breeds[0].description;
+  infoDump.appendChild(p);
 } 
 /**
  * 5. Add axios interceptors to log the time between request and response to the console.
