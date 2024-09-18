@@ -1,14 +1,10 @@
 import { useState } from 'react'
 import Header from '../components/Header.jsx'
+import Content from '../components/Content.jsx'
+import Footer from '../components/Footer.jsx'
 import './App.css'
 
-function Content(props) {
-  return (<p style={{color: props.color}}>{props.text}</p>);
-}
 
-function Footer() {
-  return (<h1>Created by Me, of course.</h1>);
-}
 
 function App() {
   return (
